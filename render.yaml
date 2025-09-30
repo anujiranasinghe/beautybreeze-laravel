@@ -24,3 +24,5 @@ cronJobs:
   - name: beautybreeze-scheduler
     schedule: "* * * * *"
     command: php artisan schedule:run
+specVersion: 1
+\n services:
