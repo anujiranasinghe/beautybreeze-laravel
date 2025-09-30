@@ -12,9 +12,7 @@ services:
         value: "false"
       - key: LOG_CHANNEL
         value: stderr
-    # Build & start are handled by your Dockerfile:
-    buildCommand: ""    # handled by Dockerfile
-    startCommand: ""    # handled by Dockerfile
+    # Build & start are handled by the Dockerfile
 
   - type: worker
     name: beautybreeze-worker
@@ -22,9 +20,7 @@ services:
     autoDeploy: true
     startCommand: php artisan queue:work --tries=3 --sleep=1
 
-jobs:
-  - type: cron
-    name: beautybreeze-scheduler
+cronJobs:
+  - name: beautybreeze-scheduler
     schedule: "* * * * *"
-    env: docker
     command: php artisan schedule:run
