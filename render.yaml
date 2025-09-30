@@ -1,3 +1,4 @@
+specVersion: 1
 services:
   - type: web
     name: beautybreeze-web
@@ -12,7 +13,6 @@ services:
         value: "false"
       - key: LOG_CHANNEL
         value: stderr
-    # Build & start are handled by the Dockerfile
 
   - type: worker
     name: beautybreeze-worker
@@ -24,5 +24,3 @@ cronJobs:
   - name: beautybreeze-scheduler
     schedule: "* * * * *"
     command: php artisan schedule:run
-specVersion: 1
-\n services:
