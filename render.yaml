@@ -17,4 +17,5 @@ services:
     name: beautybreeze-worker
     env: docker
     autoDeploy: true
-    startCommand: php artisan queue:work --tries=3 --sleep=1
+    dockerCommand: php artisan queue:work --tries=3 --sleep=1
+
