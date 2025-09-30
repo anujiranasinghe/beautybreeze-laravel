@@ -77,7 +77,22 @@ RUN printf "%s\n" \
 "autostart=true" \
 "autorestart=true" \
 "priority=10" \
+"" \
+"[program:queue]" \
+"directory=/var/www/html" \
+"command=/usr/bin/php /var/www/html/artisan queue:work --tries=3 --sleep=1" \
+"autostart=true" \
+"autorestart=true" \
+"priority=15" \
+"" \
+"[program:scheduler]" \
+"directory=/var/www/html" \
+"command=/usr/bin/php /var/www/html/artisan schedule:work" \
+"autostart=true" \
+"autorestart=true" \
+"priority=20" \
 > /etc/supervisor.d/supervisord.ini
+
 
 # Fix permissions for storage and bootstrap cache
 RUN adduser -D -H -u 1000 -s /bin/sh www \
