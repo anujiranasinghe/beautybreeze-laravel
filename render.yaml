@@ -12,10 +12,8 @@ services:
         value: "false"
       - key: LOG_CHANNEL
         value: stderr
-      # Provide APP_KEY via Render Dashboard secret or here via fromDatabase if desired
-    postDeployCommand: |
-      php artisan migrate --force && \
-      php artisan storage:link || true
+    buildCommand: ""   # handled by Dockerfile
+    startCommand: ""   # handled by Dockerfile
 
   - type: worker
     name: beautybreeze-worker
@@ -27,4 +25,3 @@ cronJobs:
   - name: beautybreeze-scheduler
     schedule: "* * * * *"
     command: php artisan schedule:run
-
