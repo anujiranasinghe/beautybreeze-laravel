@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: beautybreeze-web
+    env: docker
+    plan: standard
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: LOG_CHANNEL
+        value: stderr
+      # Provide APP_KEY via Render Dashboard secret or here via fromDatabase if desired
+    postDeployCommand: |
+      php artisan migrate --force && \
+      php artisan storage:link || true
+
+  - type: worker
+    name: beautybreeze-worker
+    env: docker
+    autoDeploy: true
+    startCommand: php artisan queue:work --tries=3 --sleep=1
+
+cronJobs:
+  - name: beautybreeze-scheduler
+    schedule: "* * * * *"
+    command: php artisan schedule:run
+
