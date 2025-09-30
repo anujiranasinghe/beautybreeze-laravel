@@ -1,4 +1,3 @@
-specVersion: 1
 services:
   - type: web
     name: beautybreeze-web
@@ -19,8 +18,3 @@ services:
     env: docker
     autoDeploy: true
     startCommand: php artisan queue:work --tries=3 --sleep=1
-
-cronJobs:
-  - name: beautybreeze-scheduler
-    schedule: "* * * * *"
-    command: php artisan schedule:run
