@@ -47,7 +47,10 @@ RUN php artisan route:clear || true \
 # -------- Runtime stage: php-fpm + nginx via supervisord --------
 FROM alpine:3.20 AS runtime
 
-RUN apk add --no-cache bash nginx supervisor curl icu-libs libpng libjpeg-turbo libwebp zlib libzip oniguruma php83 php83-fpm php83-opcache php83-session php83-xml php83-ctype php83-tokenizer php83-dom php83-fileinfo php83-gd php83-intl php83-mbstring php83-pdo php83-pdo_mysql php83-simplexml php83-zip php83-curl php83-bcmath
+RUN apk add --no-cache bash nginx supervisor curl icu-libs libpng libjpeg-turbo libwebp zlib libzip oniguruma \
+    php83 php83-fpm php83-opcache php83-session php83-xml php83-ctype php83-tokenizer php83-dom php83-fileinfo \
+    php83-gd php83-intl php83-mbstring php83-pdo php83-pdo_mysql php83-pgsql php83-pdo_pgsql php83-simplexml \
+    php83-zip php83-curl php83-bcmath
 
 # Unify php-fpm path
 RUN ln -sf /usr/bin/php83 /usr/bin/php && ln -sf /usr/sbin/php-fpm83 /usr/sbin/php-fpm
