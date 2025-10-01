@@ -38,7 +38,6 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # -------------------------------
 # Copy Laravel project files
-# (from example-app folder into container workdir)
 # -------------------------------
 COPY example-app/ . 
 
@@ -65,12 +64,12 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
  && sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/apache2.conf
 
 # -------------------------------
-# Change Apache to use Railway's PORT
+# Change Apache to port 8080
 # -------------------------------
-RUN sed -i 's/80/${PORT}/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's/80/8080/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 
 # -------------------------------
-# Expose port (Railway injects $PORT)
+# Expose port
 # -------------------------------
 EXPOSE 8080
 
