@@ -99,7 +99,7 @@ return [
             'options'  => array_filter([
                 'tls' => env('MONGODB_TLS', true),
                 // Use app storage CA bundle by default (downloaded cacert.pem)
-                'tlsCAFile' => storage_path('certs/cacert.pem'),
+                //'tlsCAFile' => storage_path('certs/cacert.pem'),
                 // Dev-only toggles (include only when explicitly true)
                 'tlsInsecure' => filter_var(env('MONGODB_TLS_INSECURE'), FILTER_VALIDATE_BOOL),
                 'tlsAllowInvalidCertificates' => filter_var(env('MONGODB_TLS_ALLOW_INVALID_CERTS'), FILTER_VALIDATE_BOOL),
