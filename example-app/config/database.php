@@ -94,18 +94,40 @@ return [
             'driver'   => 'mongodb',
             'dsn'      => env('MONGODB_URI'),
             'database' => env('MONGODB_DATABASE', 'beautybreeze'),
-            // TLS and driver options for MongoDB Atlas (Windows/OpenSSL-friendly)
-            // Only include truthy flags to avoid option conflicts.
-            'options'  => array_filter([
-                'tls' => env('MONGODB_TLS', true),
-                // Use app storage CA bundle by default (downloaded cacert.pem)
-                'tlsCAFile' => storage_path('certs/cacert.pem'),
+            // Only inject TLS options when explicitly configured. For Atlas SRV (mongodb+srv),
+            // the driver negotiates TLS automatically — forcing options can break handshakes
+            // in containers where a custom CA file is not present.
+            'options'  => (function () {
+                $uri = env('MONGODB_URI');
+                $usingSrv = \Illuminate\Support\Str::startsWith((string) $uri, 'mongodb+srv://');
+                $opts = [];
+
+                // If not using SRV, allow opting into TLS explicitly via env
+                $tls = env('MONGODB_TLS');
+                if (!$usingSrv && !is_null($tls)) {
+                    $opts['tls'] = filter_var($tls, FILTER_VALIDATE_BOOL);
+                }
+
+                // Optional CA bundle path (only if provided and exists)
+                $ca = env('MONGODB_TLS_CA_FILE');
+                if ($ca && file_exists($ca)) {
+                    $opts['tlsCAFile'] = $ca;
+                }
+
                 // Dev-only toggles (include only when explicitly true)
-                'tlsInsecure' => filter_var(env('MONGODB_TLS_INSECURE'), FILTER_VALIDATE_BOOL),
-                'tlsAllowInvalidCertificates' => filter_var(env('MONGODB_TLS_ALLOW_INVALID_CERTS'), FILTER_VALIDATE_BOOL),
-                'tlsDisableOCSPEndpointCheck' => filter_var(env('MONGODB_TLS_DISABLE_OCSP'), FILTER_VALIDATE_BOOL),
-                'tlsDisableCertificateRevocationCheck' => filter_var(env('MONGODB_TLS_DISABLE_CRL'), FILTER_VALIDATE_BOOL),
-            ]),
+                if (filter_var(env('MONGODB_TLS_INSECURE'), FILTER_VALIDATE_BOOL)) {
+                    $opts['tlsInsecure'] = true;
+                    $opts['tlsAllowInvalidCertificates'] = true;
+                }
+                if (filter_var(env('MONGODB_TLS_DISABLE_OCSP'), FILTER_VALIDATE_BOOL)) {
+                    $opts['tlsDisableOCSPEndpointCheck'] = true;
+                }
+                if (filter_var(env('MONGODB_TLS_DISABLE_CRL'), FILTER_VALIDATE_BOOL)) {
+                    $opts['tlsDisableCertificateRevocationCheck'] = true;
+                }
+
+                return $opts;
+            })(),
         ],
 
     ],
